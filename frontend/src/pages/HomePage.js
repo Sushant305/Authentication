@@ -28,13 +28,17 @@ const HomePage = () => {
       if (response.ok) {
         // useState
         // setWorkout(json);
-
         dispatch({ type: "SET_WORKOUT", payload: json });
+      } else {
+        console.log("Fetch workouts error:", json);
+        dispatch({ type: "SET_WORKOUT", payload: [] });
       }
     };
 
     if (user && user.tokens) {
       fetchWorkouts();
+    } else {
+      dispatch({ type: "SET_WORKOUT", payload: [] });
     }
   }, [dispatch, user]);
 
