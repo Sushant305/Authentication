@@ -3,18 +3,24 @@ import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 
 // Data Fns
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
   const handleClick = async () => {
-    const url = `${process.env.REACT_APP_API_URL}/api/workouts/${workout._id}`;
+    if (!user || !user.tokens) {
+      return;
+    }
 
-    console.log("DELETE URL:", url);
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/api/workouts/${workout._id}`,
       {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${user.tokens}`,
+        },
       },
     );
 

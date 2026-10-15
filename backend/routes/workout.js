@@ -1,7 +1,16 @@
 const express = require("express");
+const {
+  createWorkout,
+  getAllWorkout,
+  getworkoutById,
+  deleteWorkoutById,
+  updateWorkoutById,
+} = require("../controllers/workoutController");
+const requireAuth = require("../middleware/requireAuth");
+
 const router = express.Router();
-const Workout = require("../models/workoutModel");
-const { createWorkout, getAllWorkout, getworkoutById, deleteWorkoutById, updateWorkoutById } = require("../controllers/workoutController");
+// reuireAuth for all workout routes
+router.use(requireAuth);
 
 /*
  * Routes: /api/workouts
@@ -11,7 +20,7 @@ const { createWorkout, getAllWorkout, getworkoutById, deleteWorkoutById, updateW
  * Access : Public
  */
 
-router.get("/",getAllWorkout);
+router.get("/", getAllWorkout);
 
 /*
  * Routes: /api/workouts/:id
@@ -20,7 +29,7 @@ router.get("/",getAllWorkout);
  * parameters: id
  * Access : Public
  */
-router.get("/:id",getworkoutById);
+router.get("/:id", getworkoutById);
 
 /*
  * Routes: /api/workouts/
@@ -38,7 +47,7 @@ router.post("/", createWorkout);
  * parameters: id
  * Access : Public
  */
-router.delete("/:id",deleteWorkoutById);
+router.delete("/:id", deleteWorkoutById);
 
 /*
  * Routes: /api/workouts/:id
@@ -47,6 +56,6 @@ router.delete("/:id",deleteWorkoutById);
  * parameters: id
  * Access : Public
  */
-router.patch("/:id",updateWorkoutById);
+router.patch("/:id", updateWorkoutById);
 
 module.exports = router;

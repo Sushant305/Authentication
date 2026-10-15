@@ -4,7 +4,15 @@ const Workout = require("../models/workoutModel");
 // get all workout
 exports.getAllWorkout = async (req, res) => {
   try {
-    const workout = await Workout.find({}).sort({ createdAt: -1 });
+    
+    const user_id = req.user._id;
+    console.log("Authenticated user ID:", req.user._id);
+    console.log("Workout query user_id:", user_id);
+    const workout = await Workout.find({
+      user_id,
+    }).sort({
+      createdAt: -1,
+    });
 
     if (!workout || workout.length === 0) {
       return res.status(404).json({
@@ -27,7 +35,10 @@ exports.getworkoutById = async (req, res) => {
         error: "This is invalid Id",
       });
     }
-    const workout = await Workout.findById(id);
+    const workout = await Workout.findOne({
+      _id: id,
+      user_id: req.user._id,
+    });
     if (!workout) {
       return res.status(404).json({
         error: "No Workouts are present",
@@ -42,6 +53,7 @@ exports.getworkoutById = async (req, res) => {
 // create a new workout
 exports.createWorkout = async (req, res) => {
   const { title, reps, load } = req.body;
+   console.log("CREATE WORKOUT CONTROLLER HIT");
 
   let emptyFields = [];
   if (!title) {
@@ -61,8 +73,16 @@ exports.createWorkout = async (req, res) => {
   }
 
   try {
+    const user_id = req.user._id;
+    console.log("User ID being saved:", user_id);
     // const workout = await Workout.insertMany(req.body)
-    const workout = await Workout.create({ title, reps, load });
+    const workout = await Workout.create({
+      title,
+      reps,
+      load,
+      user_id,
+    });
+    console.log("Created workout:", workout);
     res.status(201).json(workout);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -78,7 +98,10 @@ exports.deleteWorkoutById = async (req, res) => {
         error: "This is invalid Id",
       });
     }
-    const workout = await Workout.findByIdAndDelete(id);
+    const workout = await Workout.findOneAndDelete({
+      _id: id,
+      user_id: req.user._id,
+    });
     if (!workout) {
       return res.status(404).json({
         error: "No Workouts are present",
@@ -99,8 +122,11 @@ exports.updateWorkoutById = async (req, res) => {
         error: "This is invalid Id",
       });
     }
-    const workout = await Workout.findByIdAndUpdate(
-      id,
+    const workout = await Workout.findOneAndUpdate(
+      {
+        _id: id,
+        user_id: req.user._id,
+      },
       { ...req.body },
       { new: true, runValidators: true },
     );

@@ -14,6 +14,9 @@ N: NodeJs(Backend)
 # npm i -g nodemon :- this cmd is use for the install the nodemon    
 # npm i dotenv
 # npm i mongoose
+# npm install bcrypt
+# npm i validator  
+#  npm i jsonwebtoken
 
 Run the application:- npm run dev       
 
